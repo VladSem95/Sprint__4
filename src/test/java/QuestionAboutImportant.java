@@ -1,5 +1,6 @@
 import model.MainPage;
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -10,17 +11,15 @@ import org.openqa.selenium.chrome.ChromeOptions;
 
 import static model.MainPage.*;
 
-
+@RunWith(Parameterized.class)
 public class QuestionAboutImportant {
 
-    @RunWith(Parameterized.class)
-    public static class TestClass {
         //Добавь необходимые поля
         private final By idButton;
         private final String textAfterClickButton;
         private final By xpathForAnswer;
 
-        public TestClass(By idButton, String textAfterClickButton, By xpathForElement) {
+        public QuestionAboutImportant(By idButton, String textAfterClickButton, By xpathForElement) {
             this.idButton = idButton;
             this.textAfterClickButton = textAfterClickButton;
             this.xpathForAnswer = xpathForElement;
@@ -28,18 +27,24 @@ public class QuestionAboutImportant {
 
 
         @Parameterized.Parameters
-        public static Object[][] getIdButton() {
+        public static Object[][] getTestParameters() {
 
             return new Object[][]{
                     // idButton - id кнопки, textAfterClickButton - текст в выпадающем списке, xpathForAnswer - хpath до элемента
-                    {QUESTION_IMPORTANT1, ANSWER_FOR_IMPORTANT_QUESTION1, ANSWER_AFTER_PRESS_ARROW1},
-                    {QUESTION_IMPORTANT2, ANSWER_FOR_IMPORTANT_QUESTION2, ANSWER_AFTER_PRESS_ARROW2},
-                    {QUESTION_IMPORTANT3, ANSWER_FOR_IMPORTANT_QUESTION3, ANSWER_AFTER_PRESS_ARROW3},
-                    {QUESTION_IMPORTANT4, ANSWER_FOR_IMPORTANT_QUESTION4, ANSWER_AFTER_PRESS_ARROW4},
-                    {QUESTION_IMPORTANT5, ANSWER_FOR_IMPORTANT_QUESTION5, ANSWER_AFTER_PRESS_ARROW5},
-                    {QUESTION_IMPORTANT6, ANSWER_FOR_IMPORTANT_QUESTION6, ANSWER_AFTER_PRESS_ARROW6},
-                    {QUESTION_IMPORTANT7, ANSWER_FOR_IMPORTANT_QUESTION7, ANSWER_AFTER_PRESS_ARROW7},
-                    {QUESTION_IMPORTANT8, ANSWER_FOR_IMPORTANT_QUESTION8, ANSWER_AFTER_PRESS_ARROW8},
+                    {MainPage.getArrowQuestions1(), "Сутки — 400 рублей. Оплата курьеру — наличными или картой.", MainPage.getAnswerAfterPressArrow1()},
+                    {MainPage.getArrowQuestions2(), "Пока что у нас так: один заказ — один самокат. Если хотите покататься с друзьями, можете просто сделать несколько заказов — один за другим.",
+                            MainPage.getAnswerAfterPressArrow2()},
+                    {MainPage.getArrowQuestions3(), "Допустим, вы оформляете заказ на 8 мая. Мы привозим самокат 8 мая в течение дня." +
+                            " Отсчёт времени аренды начинается с момента, когда вы оплатите заказ курьеру." +
+                            " Если мы привезли самокат 8 мая в 20:30, суточная аренда закончится 9 мая в 20:30.", MainPage.getAnswerAfterPressArrow3()},
+                    {MainPage.getArrowQuestions4(), "Только начиная с завтрашнего дня. Но скоро станем расторопнее.", MainPage.getAnswerAfterPressArrow4()},
+                    {MainPage.getArrowQuestions5(), "Пока что нет! " +
+                            "Но если что-то срочное — всегда можно позвонить в поддержку по красивому номеру 1010.", MainPage.getAnswerAfterPressArrow5()},
+                    {MainPage.getArrowQuestions6(), "Самокат приезжает к вам с полной зарядкой." +
+                            " Этого хватает на восемь суток — даже если будете кататься без передышек и во сне. Зарядка не понадобится.", MainPage.getAnswerAfterPressArrow6()},
+                    {MainPage.getArrowQuestions7(), "Да, пока самокат не привезли. " +
+                            "Штрафа не будет, объяснительной записки тоже не попросим. Все же свои.", MainPage.getAnswerAfterPressArrow7()},
+                    {MainPage.getArrowQuestions8(), "Да, обязательно. Всем самокатов! И Москве, и Московской области.", MainPage.getAnswerAfterPressArrow8()},
             };
         }
         @Test
@@ -62,14 +67,12 @@ public class QuestionAboutImportant {
             waitElementToBeClickable(idButton);//ожидание кликабельности элемента
             mainPage.findButtonArrow(idButton).click(); //кликаем на вопрос
             mainPage.waitLoadAnswerText(xpathForAnswer); //ожидание текста ответа на раскрытый вопрос
-            mainPage.comprasionExpectedAndActualResult(xpathForAnswer,textAfterClickButton);
-
+            Assert.assertEquals(textAfterClickButton, mainPage.comprasionExpectedAndActualResult(xpathForAnswer,textAfterClickButton));
         }
         //Выход из браузера
         @After
         public void tearDown() {
             driver.quit();
         }
-    }
 }
 
