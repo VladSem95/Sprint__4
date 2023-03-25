@@ -1,6 +1,5 @@
-import model.MainPage;
 import model.OrderPage;
-import org.junit.After;
+import org.hamcrest.MatcherAssert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -9,26 +8,32 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
 
-import static model.MainPage.driver;
-import static model.OrderPage.*;
+import static org.hamcrest.CoreMatchers.containsString;
 
 @RunWith(Parameterized.class)
 public class MakeToOrder {
 
         private final By orderButton;
         private final By metroStation;
-
-        public MakeToOrder(By orderButton, By metroStation) {
+        private final String name;
+        private final String surname;
+        private final String adress;
+        private final String phoneNumber;
+        public MakeToOrder(By orderButton, By metroStation, String name, String surname, String adress, String phoneNumber) {
             this.orderButton = orderButton;
             this.metroStation = metroStation;
+            this.name = name;
+            this.surname = surname;
+            this.adress = adress;
+            this.phoneNumber = phoneNumber;
         }
         @Parameterized.Parameters
-        public static Object[][] getIdButton() {
+        public static Object[][] getTestParameters() {
 
             return new Object[][]{
                     // orderButton - кнопка заказа, metroStation - станция метро
-                    {OrderPage.getButtonOrderUp(), OrderPage.getMetroMolodezhnaySelect()}, //метро молодежная(50), верхняя кнопка заказать
-                    {OrderPage.getButtonOrderDown(), OrderPage.getMetroVodniyStadion()}, //метро водный стадион(23),нижняя кнопка заказать
+                    {OrderPage.getButtonOrderUp(), OrderPage.getMetroMolodezhnaySelect(),"Пётр", "Петров", "Ул. Мира, д.50, кв. 73", "89007778080"}, //метро молодежная(50), верхняя кнопка заказать
+                    {OrderPage.getButtonOrderDown(), OrderPage.getMetroVodniyStadion(), "Иван", "Иванов", "Ул. Ленина, д.50, кв. 55", "89001775550"}, //метро водный стадион(23),нижняя кнопка заказать
             };
         }
         @Test
@@ -44,36 +49,24 @@ public class MakeToOrder {
                 FirefoxOptions options = new FirefoxOptions();
                 options.addArguments("--headless");
                 WebDriver driver = new FirefoxDriver();
-                MainPage mainPage = new MainPage(driver);
-
-                OrderPage orderPage = new OrderPage();
+                OrderPage orderPage = new OrderPage(driver);
 
             //Открытие главной страницы и переход на страницу оформления заказа
-            goToOrderScooter(orderButton);
+            orderPage.goToOrderScooter(orderButton, driver);
             //Заполнение информации "Для кого" и переход на страницу "Про аренду"
-            String name = "Пётр";
-            String surname = "Петров";
-
-            String adress = "Ул. Мира, д.50, кв. 73";
-            String phoneNumber = "89007778080";
-            orderPage.inputBasicInformation(metroStation, name, surname, adress, phoneNumber);
+            orderPage.inputBasicInformation(metroStation, name, surname, adress, phoneNumber, driver);
             //Заполнение информации "Про аренду" и оформление заказа
             String comment= "Домофон не работает";
-            orderPage.inputInfoAboutRent(comment);
+            orderPage.inputInfoAboutRent(comment, driver);
             //Подтверждение заказа
-            orderPage.confirmOrder();
+            orderPage.confirmOrder(driver);
             //Получение окна с подтверждением заказа
-            orderPage.getTextOrderProcessed();
+            orderPage.getTextOrderProcessed(driver);
             //Просмотр информации о заказе
-            orderPage.getInfoAboutOrder();
-
-
-        }
-      @After
-        public void tearDown() {
+            MatcherAssert.assertThat(orderPage.getTextOrderProcessed(driver),
+                    containsString("Заказ оформлен"));
             driver.quit();
+
         }
-
-
 }
 

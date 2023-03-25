@@ -86,39 +86,39 @@ public class MainPage {
     public static String returnUrl() {
         return PAGE_URL;
     }
-    public static WebDriver driver;
+    private  WebDriver driver;
     public MainPage(WebDriver driver) {
         this.driver = driver;
 
     }
     //Открытие стартовой страницы
-    public static void openPage() {
+    public void openPage() {
         driver.get(PAGE_URL);
     }
     //Согласие на использование куки
-    public static void clickCookieConfirmButton() {
+    public  void clickCookieConfirmButton() {
         driver.findElement(By.id("rcc-confirm-button")).click();
     }
     //Поиск вопроса
-    public static WebElement findButtonArrow(By idButton) {
+    public  WebElement findButtonArrow(By idButton) {
         WebElement buttonArrow = driver.findElement(idButton);
         return buttonArrow;
     }
     //Скролл до вопроса
-    public static void scrollToButtonArrow(WebElement buttonArrow) {
+    public void scrollToButtonArrow(WebElement buttonArrow) {
         ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView();", buttonArrow);
     }
     //Ожидание пока элемент не станет кликабельным
-    public static void waitElementToBeClickable(By idButton) {
+    public void waitElementToBeClickable(By idButton) {
         new WebDriverWait(driver, Duration.ofSeconds(5)).until(ExpectedConditions.elementToBeClickable(idButton));
     }
     //Ожидание пока не прогрузится ответ после нажатия кнопки
-    public static void waitLoadAnswerText(By xpathForAnswer) {
+    public void waitLoadAnswerText(By xpathForAnswer) {
         new WebDriverWait(driver, Duration.ofSeconds(5)).until(
                 ExpectedConditions.visibilityOfElementLocated(xpathForAnswer));
     }
     //Получение текста ответа и сравнение с ожидаемым ответом на вопрос
-    public static String comprasionExpectedAndActualResult(By xpathForAnswer, String textAfterClickButton) {
+    public String comprasionExpectedAndActualResult(By xpathForAnswer, String textAfterClickButton) {
         String textAfterPressButtonArrow = driver.findElement(xpathForAnswer).getText(); //получаем текст появившегося элемента
         return textAfterPressButtonArrow;
     }

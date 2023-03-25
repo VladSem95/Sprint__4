@@ -63,15 +63,11 @@ public class QuestionAboutImportant {
 
             mainPage.openPage(); //открываем страницу
             mainPage.clickCookieConfirmButton() ; //принимаем кукм
-            scrollToButtonArrow(mainPage.findButtonArrow(idButton));//скролим до кнопки
-            waitElementToBeClickable(idButton);//ожидание кликабельности элемента
+            mainPage.scrollToButtonArrow(mainPage.findButtonArrow(idButton));//скролим до кнопки
+            mainPage.waitElementToBeClickable(idButton);//ожидание кликабельности элемента
             mainPage.findButtonArrow(idButton).click(); //кликаем на вопрос
             mainPage.waitLoadAnswerText(xpathForAnswer); //ожидание текста ответа на раскрытый вопрос
             Assert.assertEquals(textAfterClickButton, mainPage.comprasionExpectedAndActualResult(xpathForAnswer,textAfterClickButton));
-        }
-        //Выход из браузера
-        @After
-        public void tearDown() {
             driver.quit();
         }
 }
